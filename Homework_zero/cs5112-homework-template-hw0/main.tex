@@ -1,0 +1,96 @@
+\documentclass{hw}
+\usepackage{xcolor}
+
+% STUDENTS: Please fill these out with your information
+\newcommand{\name}{Fill Here}
+\newcommand{\netid}{Fill Here}
+\newcommand{\collaborators}{Fill Here}
+% / STUDENT
+
+\newcommand{\hwnum}{0}
+\newcommand{\duedate}{September 19, 11:59pm ET}
+\renewcommand{\title}{Python Basics}
+
+\newcommand{\submission}{\textbf{Submission.}}
+
+\newtheorem{claim}{Claim}
+
+\begin{document}
+
+
+
+\newcommand{\rank}{\textnormal{rank}}
+\newcommand{\Colon}{:}
+\newcommand{\dotdot}{..}
+\newcommand{\numinv}{\textrm{NI}}
+\newcommand{\numlargeinv}{\textrm{NLI}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 6
+
+\textbf{Problem 6} (\texttt{p1\_advanced.py}).\\ 
+(d) \textit{Binary search problem} (function \texttt{binary\_search}). Provide a basic write-up describing your solution for this problem, as well as provide a graph comparing the performance of linear\_search and binary\_search for list of the following sizes: [10, 100, 1000, 10000, 100000, 1000000].
+
+\begin{solution}
+Problem Description:
+
+The binary search problem involves finding a specific element in a sorted list efficiently. Given a sorted list (array) of elements and a target value, the goal is to determine whether the target value exists in the list and, if it does, find its index. Binary search is a divide-and-conquer algorithm that significantly reduces the number of comparisons needed to locate an element compared to linear search.
+
+\begin{algorithm}
+\caption{Binary Search}
+
+\begin{algorithmic}[1]
+
+\STATE Initialize \texttt{left} to 0 and \texttt{right} to $n - 1$ where $n$ is the size of the sorted array
+
+\WHILE{\texttt{left} ≤ \texttt{right}}
+
+\STATE Set \texttt{mid} = $\lfloor$ (\texttt{left} + \texttt{right}) / 2 $\rfloor$
+
+\IF{array[\texttt{mid}] = \texttt{target}}
+
+\STATE \textbf{return} \texttt{mid}
+
+\ELSIF{array[\texttt{mid}] $>$ \texttt{target}}
+
+\STATE \texttt{right} = \texttt{mid} - 1
+
+\ELSE
+
+\STATE \texttt{left} = \texttt{mid} + 1
+
+\ENDIF
+
+\ENDWHILE
+
+\STATE \textbf{return} -1 \COMMENT{target not found}
+
+\end{algorithmic}
+
+\end{algorithm}
+
+The key steps are:
+
+\begin{itemize}
+\item Initialize left and right pointers
+\item Calculate mid index between left and right
+\item Compare mid element to target
+
+\item If equal, return mid index
+\item If mid > target, update right pointer
+\item If mid < target, update left pointer
+
+\item Repeat until pointers cross
+\end{itemize}
+
+This bisects the search space in half each iteration to efficiently find the target element in $\mathcal{O}(\log n)$ time.
+
+
+
+\end{solution}
+\includegraphics[width=10cm, height=10cm]{Screenshot 2023-09-12 at 2.28.29 PM.png}.
+
+The results clearly demonstrate that the linear search algorithm scales poorly as the list size increases exponentially. In contrast, the graph shows that the binary search algorithm runtime grows logarithmically with list size. In summary, binary search provides substantially faster lookup times than linear search for large lists due to its logarithmic scaling.
+
+
+\end{document}
