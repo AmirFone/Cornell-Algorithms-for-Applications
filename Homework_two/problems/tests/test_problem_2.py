@@ -78,14 +78,18 @@ class TestProblem2(unittest.TestCase):
     def test_closest1(self):
         self.assertEqual(convert_to_set(closest(input_1)), convert_to_set([(0,0), (1,1)]))
 
+    def test_closest4(self):
+        self.assertEqual(convert_to_set(closest_dp(input_1)), convert_to_set([(0,0), (1,1)]))
+        
+    def test_closest7(self):
+        self.assertEqual(convert_to_set(closest_rand(input_1)), convert_to_set([(0,0), (1,1)]))
+        
     def test_closest2(self):
         self.assertEqual(convert_to_set(closest(input_2)), convert_to_set([[0.47, 0.53], [0.4, 0.57]]))
 
     def test_closest3(self):
         self.assertEqual(convert_to_set(closest(input_3)), convert_to_set([[0.45, 0.16], [0.45, 0.15]]))
 
-    def test_closest4(self):
-        self.assertEqual(convert_to_set(closest_dp(input_1)), convert_to_set([(0,0), (1,1)]))
 
     def test_closest5(self):
         self.assertEqual(convert_to_set(closest_dp(input_2)), convert_to_set([[0.47, 0.53], [0.4, 0.57]]))
@@ -93,8 +97,6 @@ class TestProblem2(unittest.TestCase):
     def test_closest6(self):
         self.assertEqual(convert_to_set(closest_dp(input_3)), convert_to_set([[0.45, 0.16], [0.45, 0.15]]))
 
-    def test_closest7(self):
-        self.assertEqual(convert_to_set(closest_rand(input_1)), convert_to_set([(0,0), (1,1)]))
 
     def test_closest8(self):
         self.assertEqual(convert_to_set(closest_rand(input_2)), convert_to_set([[0.47, 0.53], [0.4, 0.57]]))

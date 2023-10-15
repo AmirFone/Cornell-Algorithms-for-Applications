@@ -2,15 +2,31 @@
 
 
 def maxsum_tree(vertices, adjacency) -> int:
-    dp=[0]*len(vertices)
-    for i in range(len(vertices)):
-        if i==0:
-            dp[i]=vertices[i]
-        elif i==1:
-            dp[i]=max(vertices[i],vertices[i-1])
-        else:
-            dp[i]=max(dp[i-1],dp[i-2]+vertices[i])
-    
-    return dp[-1]
-    
+    def dfs(node, parent):
+        # base case
+        if not adjacency[node]:
+            # Leaf node
+            include[node] = vertices[node]
+            exclude[node] = 0
+            return
+        # general case
+        include[node] = vertices[node]
+        exclude[node] = 0
 
+        for child in adjacency[node]:
+            if child != parent:
+                dfs(child, node)
+                include[node] += exclude[child]
+                exclude[node] += max(include[child], exclude[child])
+
+    n = len(vertices)
+    if n == 0:
+        return 0
+
+    include = [0] * n
+    exclude = [0] * n
+    # Starting the dynamic programming from the root node and no parent
+    dfs(0, -1)
+
+    # The solution is the maximum at the root node
+    return max(include[0], exclude[0])
