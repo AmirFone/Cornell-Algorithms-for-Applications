@@ -32,7 +32,7 @@ class TestProblem3(unittest.TestCase):
         l.insert(0)
         l.insert(1)
         l.insert(3)
-
+        
         self.assertEqual(l.root.val, 0)
         self.assertEqual(l.root.next[0].val, 1)
         self.assertEqual(l.root.next[0].next[0].val, 3)

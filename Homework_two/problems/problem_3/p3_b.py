@@ -1,60 +1,81 @@
-import random
+from random import randint
 
-class Node:
-  def __init__(self, val, level): 
-    self.val = val
-    self.next = [None] * level
+class SkipNode:
+    """A node from a skip list"""    
+    def __init__(self, height = 0, elem=None):
+        self.val = elem
+        self.next = [None]*height
 
 class SkipList:
-  def __init__(self, max_level, p):
-    self.max_level = max_level
-    self.p = p 
-    self.root = Node(None, max_level)  # renamed from self.root to self.root
 
-  def random_level(self):
-    level = 0
-    while random.random() < self.p  and level < self.max_level - 1:  
-      level += 1
-    return min(level, self.max_level-1)
+    def __init__(self, maxHeight, probability):
+        self._root = SkipNode(maxHeight, None)
+        self.maxHeight = maxHeight
+        self.p = probability
+        self.first = None
+        self.len = 0
 
-  def insert(self, x):
-    new_level = self.random_level()
-    new_node = Node(x, new_level)
-    update = [self.root] * self.max_level
+    @property
+    def root(self):
+        return self.first or self._root
+      
+    def __len__(self):
+        return self.len
 
-    current = self.root
-    
-    for i in reversed(range(new_level + 1)):
-        while i < len(current.next) and current.next[i] and current.next[i].val < x: 
-            current = current.next[i]  
-        update[i] = current
+    def search(self, elem, update = None):
+        if update == None:
+            update = self.updateList(elem)
+        node = update[0].next[0] if update[0] else None
+        if node != None and node.val == elem:
+            return node
+        return None
 
-    # If root's value is None (which means this is 
-    # the first element being inserted)
-    if self.root.val is None:
-        self.root = new_node
-        # Assign the next pointers of the root node
-        self.root.next = new_node.next
-    else:
-        for i in range(new_level+1):
-            if i >= len(new_node.next):
-                new_node.next.append(None)
+    def insert(self, elem):
+        node = SkipNode(self.randomHeight(), elem)
+
+        if self.first is None:
+          self.first = node
+
+        while len(self._root.next) < len(node.next):
+            self._root.next.append(None)
             
-            # Make this assignment only if `i` is within the range of `update[i].next`
-            if i < len(update[i].next):
-                new_node.next[i] = update[i].next[i]
+        self.maxHeight = max(self.maxHeight, len(node.next))
 
-            # Here also check if `i` is within the range of `update[i].next`
-            if i < len(update[i].next):
-                update[i].next[i] = new_node
+        update = self.updateList(elem)
+        for i in range(len(node.next)):
+            node.next[i] = update[i].next[i] if update[i] else None
+            update[i].next[i] = node
 
-  def search(self, x):
-    current = self.root
-    for i in reversed(range(self.max_level)):
-      while current.next[i] and current.next[i].val < x:
-        current = current.next[i]
-    current = current.next[0]
-    if current and current.val == x:
-      return current
-    else:
-      return None
+        self.len += 1
+
+    def delete(self, elem):
+
+        update = self.updateList(elem)
+        x = self.search(elem, update)
+
+        if x != None:
+            for idx, item in enumerate(update):
+                if item and item.next[idx] == x:
+                    item.next[idx] = x.next[idx]
+                    if self._root.next[idx] == item:
+                        self.maxHeight -= 1
+            self.len -= 1
+
+            if x == self.first:
+                self.first = self.first.next[0]
+
+    def randomHeight(self):
+        height = 1
+        while randint(0, self.maxHeight-1) < self.maxHeight*self.p:
+            height += 1
+        return height
+
+    def updateList(self, elem):
+        update = [None]*self.maxHeight
+        x = self._root
+
+        for i in reversed(range(self.maxHeight)):
+            while x.next[i] != None and (x.next[i].val < elem if x.next[i] else False):
+                x = x.next[i]
+            update[i] = x
+        return update
