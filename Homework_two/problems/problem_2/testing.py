@@ -9,7 +9,7 @@ def generate_random_coordinates_list(size):
     coordinates_list = [(random.uniform(0, 100), random.uniform(0, 100)) for _ in range(size)]
     return coordinates_list
 
-test_case_n = [10, 50, 100, 250, 500,750,1000,1500,2000,2500,100_000]
+test_case_n = [10, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 15000]
 
 runtimes_closest = []
 runtimes_closest_dp = []

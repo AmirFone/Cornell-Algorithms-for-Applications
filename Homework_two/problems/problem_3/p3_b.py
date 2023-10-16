@@ -1,6 +1,6 @@
 from random import randint
 
-class SkipNode:
+class Node:
     """A node from a skip list"""    
     def __init__(self, height = 0, elem=None):
         self.val = elem
@@ -9,7 +9,7 @@ class SkipNode:
 class SkipList:
 
     def __init__(self, maxHeight, probability):
-        self._root = SkipNode(maxHeight, None)
+        self._root = Node(maxHeight, None)
         self.maxHeight = maxHeight
         self.p = probability
         self.first = None
@@ -31,7 +31,7 @@ class SkipList:
         return None
 
     def insert(self, elem):
-        node = SkipNode(self.randomHeight(), elem)
+        node = Node(self.randomHeight(), elem)
 
         if self.first is None:
           self.first = node
