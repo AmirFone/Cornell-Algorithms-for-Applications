@@ -6,7 +6,7 @@ def get_distance(point1, point2):
     return math.sqrt(((point1[0]-point2[0])**2) + ((point1[1]-point2[1])**2))
 
 def closest_pair(points):
-    random.seed(1)
+    # random.seed(1)
     random.shuffle(points)
 
     p1 = points[0]
@@ -14,8 +14,14 @@ def closest_pair(points):
     delta = get_distance(p1, p2)
     pair = {tuple(p1), tuple(p2)}
 
-    # Use a dict to store bucketed points
-    buckets = {(p1[0]//1, p1[1]//1): {tuple(p1)}, (p2[0]//1, p2[1]//1): {tuple(p2)}}
+    buckets = {}
+    # Initialize the buckets with p1 and p2
+    for point in [p1, p2]:
+        x, y = int(point[0] // 1), int(point[1] // 1)
+        bucket_coordinates = (x, y)
+        if bucket_coordinates not in buckets:
+            buckets[bucket_coordinates] = set()
+        buckets[bucket_coordinates].add(tuple(point))
 
     for point in points[2:]:
         x = int(point[0]//1); y = int(point[1]//1)

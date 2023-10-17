@@ -6,10 +6,11 @@ from p2_b import closest_pair as closest_dp
 from p2_c import closest_pair as closest_rand
 
 def generate_random_coordinates_list(size):
-    coordinates_list = [(random.uniform(0, 100), random.uniform(0, 100)) for _ in range(size)]
+    coordinates_list = [(random.uniform(i, i+1), random.uniform(i, i+1)) for i in range(size)]
     return coordinates_list
 
-test_case_n = [10, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 15000]
+
+test_case_n = [10, 50, 100, 250,1000,2000,10000,100000]
 
 runtimes_closest = []
 runtimes_closest_dp = []

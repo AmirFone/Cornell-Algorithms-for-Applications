@@ -9,59 +9,59 @@ def d(point1, point2):
 
 def closest_pair(points):
     
-    # Brute force method
+    # Brute force is used when the size of the input is small
     def brute(points):
-        min_distance = float('inf')
+        min = float('inf')
         closest = []
         for i in range(len(points) - 1):
             for j in range(i+1, len(points)):
-                distance = d(points[i], points[j])
-                if distance < min_distance:
-                    min_distance = distance
-                    closest = [points[i],points[j]]
+                dis = d(points[i], points[j])
+                if dis < min:
+                    min = dis
+                    closest = [points[i], points[j]]
         return closest
-
 	# Sort points by x-coord 
     points.sort()
     
-    def divide_conquer(pts):
-        # using brute force method when size less <= three
-        if len(pts) <= 3:
-            return brute(pts)
+    def divide_conquer(p):
+        # using brute force method when size less <= 3
+        if len(p) <= 3:
+            return brute(p)
                     
-        mid = len(pts) // 2
-        mid_point = pts[mid]
+        mid = len(p) // 2
+        mid_point = p[mid]
         
-        left = pts[:mid]
-        right = pts[mid:]
+        left = p[:mid]
+        right = p[mid:]
         
         # Calculating the closest pairs for the left and right sides
-        closest_in_left = divide_conquer(left)
-        closest_in_right = divide_conquer(right)
+        closest_left = divide_conquer(left)
+        closest_right = divide_conquer(right)
 
         # Calculating the distances for the closest pairs
-        distance_left = d(*closest_in_left)
-        distance_right = d(*closest_in_right)
+        distance_left = d(*closest_left)
+        distance_right = d(*closest_right)
 
-        # the pair with the smaller distance
+        # swap 
         if distance_left < distance_right:
-            closest_pair = closest_in_left
+            closest_pair = closest_left
         else:
-            closest_pair = closest_in_right
+            closest_pair = closest_right
         
         strip = []
-        for point in pts:
+        for point in p:
             if abs(point[0] - mid_point[0]) < d(closest_pair[0], closest_pair[1]):
                 strip.append(point)
         
-        strip.sort(key = lambda x: x[1]) # sort by y-coordinate
+        # sort by y  ex: p[x,y] 
+        strip.sort(key = lambda x: x[1]) 
         
-        min_distance_so_far = d(*closest_pair)
+        new_dis = d(*closest_pair)
         
         for i, point in enumerate(strip):
             for j in range(i+1, min(i+7, len(strip))): # Only check next 7 points
-                if strip[j][1] - strip[i][1] < min_distance_so_far:
-                    min_distance_so_far = d(strip[i], strip[j])
+                if strip[j][1] - strip[i][1] < new_dis:
+                    new_dis = d(strip[i], strip[j])
                     closest_pair = (strip[i], strip[j])
             
         return closest_pair

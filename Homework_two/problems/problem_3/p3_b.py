@@ -17,10 +17,8 @@ class SkipList:
 
     @property
     def root(self):
+        # need to do this because of the way the tests are written
         return self.first or self._root
-      
-    def __len__(self):
-        return self.len
 
     def search(self, elem, update = None):
         if update == None:
