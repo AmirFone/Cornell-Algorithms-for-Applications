@@ -2,7 +2,14 @@
 
 
 def maxsum_tree(vertices, adjacency) -> int:
-    def dfs(node, parent):
+    n = len(vertices)
+    if n == 0:
+        return 0
+
+    include = [0 for _ in range(n)]
+    exclude = [0 for _ in range(n)]
+
+    def dfs(node, parent = -1):
         # base case
         if not adjacency[node]:
             # Leaf node
@@ -14,19 +21,13 @@ def maxsum_tree(vertices, adjacency) -> int:
         exclude[node] = 0
 
         for child in adjacency[node]:
-            if child != parent:
-                dfs(child, node)
-                include[node] += exclude[child]
-                exclude[node] += max(include[child], exclude[child])
+            if child == parent:
+                continue
 
-    n = len(vertices)
-    if n == 0:
-        return 0
+            dfs(child, node)
 
-    include = [0] * n
-    exclude = [0] * n
-    # Starting the dynamic programming from the root node and no parent
-    dfs(0, -1)
+            include[node] += exclude[child]
+            exclude[node] += max(include[child], exclude[child])
 
-    # The solution is the maximum at the root node
+    dfs(0)
     return max(include[0], exclude[0])

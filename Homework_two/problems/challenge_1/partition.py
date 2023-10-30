@@ -13,7 +13,17 @@ def brute_force(xs):
     return [int(x in min_combination) for x in xs]
 
 def greedy(xs):
-    pass
+    # Sorting numbers in descending order
+    xs.sort(reverse=True)
+    subset1, subset2 = [], [] 
+    for i in xs:
+        # Include current element to the subset with smaller sum.
+        if sum(subset1) <= sum(subset2):
+            subset1.append(i)
+        else:
+            subset2.append(i)
+    # Returning a list indicating whether an element is in subset1 or not.
+    return [int(x in subset1) for x in xs]
 
 def dp(xs):
     total = sum(xs)
