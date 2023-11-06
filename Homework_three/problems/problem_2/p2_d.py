@@ -21,7 +21,7 @@ def plan_city_d(num_data_hubs, num_service_providers, connections, provider_capa
   
     # Check connectivity of every data hub via DFS
     def dfs(u, visited):
-        print(f'Visiting node {u}')  # Debug print
+        # print(f'Visiting node {u}')  # Debug print
         visited[u] = True
         if u == sink:  # if reached sink, return True indicating a path exists
             return True
@@ -33,8 +33,8 @@ def plan_city_d(num_data_hubs, num_service_providers, connections, provider_capa
     for hub in range(n):
         visited = [False] * (n + k + 2)
         if not dfs(hub, visited):
-            print(f'Node {hub} is not connected\n')  # Debug print
+            # print(f'Node {hub} is not connected\n')  # Debug print
             return False
 
-    print(f'All nodes are connected\n')  # Debug print
+    # print(f'All nodes are connected\n')  # Debug print
     return True

@@ -1,5 +1,4 @@
 # Problem 1b
-
 def bpm(bpGraph, u, matchR, seen):
     for v in range(len(bpGraph[0])):
         # If applicant u is interested in job v and v is not visited 

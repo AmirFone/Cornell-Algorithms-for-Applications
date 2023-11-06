@@ -53,31 +53,27 @@ def visualize_res_graph(res_graph, n, k, source_idx=None, sink_idx=None, name='r
 def plan_city_a(num_data_hubs, num_service_providers, connections, provider_capacities, preliminary_assignment):
     n = num_data_hubs
     k = num_service_providers
-    source, sink = n + k, n + k + 1  
+    source, sink = n + k, n + k + 1
 
-    res_graph = [[] for _ in range(num_data_hubs + num_service_providers + 2)]
-    
-    # Source to data_hubs + data_hubs to service_providers connectivity
+    # Initialize residual graph with empty edges. Now n+k+2 to account for the source and sink.
+    res_graph = [[] for _ in range(n + k + 2)]
+
+    # For each hub, add a connection from source to the hub.
     for hub in range(n):
-        res_graph[source].append(hub)  # from source to hub
-        for provider in connections[hub]:
-            res_graph[hub].append(provider)  # from hub to provider
+        res_graph[source].append(hub)
+        res_graph[hub].append(source)
 
-    visualize_res_graph(res_graph, n, k, name='p2a_graph')
+    # Then, for each connection in the "connections", add a connection from hub to provider and from provider to hub.
+    for hub, providers in connections.items():
+        for provider in providers:
+            res_graph[hub].append(provider)
+            res_graph[provider].append(hub)
 
-    # service_providers to Sink connectivity (Problem 2.b)
-    for i, capacity in enumerate(provider_capacities[n:], start=n):
-        if capacity > 0:
-            res_graph[i].append(sink)  # from provider to sink
+    # Finally, add connections from providers to sink, according to the capacities.
+    for provider in range(n, n + k):
+        provider_idx = provider
+        for _ in range(provider_capacities[provider_idx - n]):
+            res_graph[provider_idx].append(sink)
+            res_graph[sink].append(provider_idx)
             
-    visualize_res_graph(res_graph, n, k, name='p2b_graph')
-
-    # Create residual graph accounting for preliminary_assignment (Problem 2.c)
-    for hub, provider in preliminary_assignment.items():
-        if provider in res_graph[hub]:
-            res_graph[hub].remove(provider)
-            provider_capacities[provider] -= 1
-            if provider_capacities[provider] > 0:
-                res_graph[provider].append(sink)  # add back if capacity is still > 0
-
-    visualize_res_graph(res_graph, n, k, name='p2c_graph')
+    return True
