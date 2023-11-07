@@ -73,13 +73,13 @@ class TestProblem2(unittest.TestCase):
         for input_file in input_files:
             self.assertEqual(read_input(input_file, plan_city_d, type='b'), True)
     
-    # def test_correctness_public_e1(self):
-    #     input_files = [
-    #         "./test_files_p2/test_0_in.txt",
-    #         "./test_files_p2/test_3_in.txt",
-    #     ]
-    #     for input_file in input_files:
-    #         self.assertEqual(read_input(input_file, plan_city_e, type='c'), True)
+    def test_correctness_public_e1(self):
+        input_files = [
+            "./test_files_p2/test_0_in.txt",
+            "./test_files_p2/test_3_in.txt",
+        ]
+        for input_file in input_files:
+            self.assertEqual(read_input(input_file, plan_city_e, type='c'), True)
         
         
 

@@ -1,6 +1,8 @@
 # Problem 1a
-from collections import deque
+from collections import deque, defaultdict
 def is_bipartite(g):
+    # print(g)
+    # print(g[0])
     color = {}
     for node in g:
         if node not in color:
@@ -14,4 +16,5 @@ def is_bipartite(g):
                         queue.append(neighbor)
                     elif color[neighbor] == color[node]:
                         return False
+    # print(color)
     return True
