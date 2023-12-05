@@ -42,7 +42,7 @@ def read_input(input_name, test_func, type='b'):
 
         neighbours = {i: [] for i in range(n)}
         recruiterCapacities = [0] * (n + k)
-        preliminaryAssignment = {}
+        preliminary_assignment = {}
 
         for i in range(n):
             parts = list(map(int, file.readline().split()))
@@ -55,9 +55,9 @@ def read_input(input_name, test_func, type='b'):
 
         parts = list(map(int, file.readline().split()))
         for i in range(n - 1):
-            preliminaryAssignment[i] = parts[i]
+            preliminary_assignment[i] = parts[i]
 
-    result = test_func(num_data_hubs=n, num_service_providers=k, connections=neighbours, provider_capacities=[0]*n + recruiterCapacities, preliminaryAssignment=preliminaryAssignment)
+    result = test_func(num_data_hubs=n, num_service_providers=k, connections=neighbours, provider_capacities=[0]*n + recruiterCapacities, preliminary_assignment=preliminary_assignment)
     if type=='b':
         return verify_result_b(input_name, result)
     if type=='c':

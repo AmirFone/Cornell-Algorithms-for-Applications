@@ -1,137 +1,81 @@
-# import networkx as nx
-# import matplotlib.pyplot as plt\
-from collections import deque
-
-# def visualize_res_graph(res_graph, n, k, source_idx=None, sink_idx=None, name='res_graph'):
-#     plt.cla()
-#     plt.clf()
-#     G = nx.Graph()  # Create a directed graph object
-
-#     if source_idx is None:
-#         source_idx = n + k
-#     if sink_idx is None:
-#         sink_idx = n + k + 1
-
-#     # Add nodes
-#     for i in range(len(res_graph)):
-#         G.add_node(i)
-
-#     # Add edges based on rGraph adjacency lists
-#     for i, neighbours in enumerate(res_graph):
-#         for neighbor in neighbours:
-#             G.add_edge(i, neighbor)
-
-#     # Set position manually for nodes to ensure no overlaps
-#     pos = {}
-    
-#     # Position nodes with label 'c'
-#     for idx in range(n):
-#         pos[idx] = (0.25, idx / (n-1))
-    
-#     # Position nodes with label 'r'
-#     for idx in range(n, n+k):
-#         pos[idx] = (0.75, (idx-n) / (k-1))
-
-#     # Set position for the Source and Sink
-#     pos[source_idx] = (0, 0.5)
-#     pos[sink_idx] = (1, 0.5)
-
-#     # Map nodes to labels
-#     labels = {i: "prov" + str(i - n) if i >= n and i < n+k else "hub" + str(i) for i in range(n + k)}
-#     labels[source_idx] = 'Source'
-#     labels[sink_idx] = 'Sink'
-
-#     # Draw the graph
-#     nx.draw(G, pos, labels=labels, with_labels=True, node_color="skyblue", node_size=1000, font_size=10, font_weight='bold', edge_color='gray', width=2.0, alpha=0.6)
-#     plt.savefig(name + ".png")
-
-
-def ford_fulkerson(res_graph,source,sink):
-    max_flow=0
-    while True:
-        path,path_flow = find_augmenting_path(res_graph, source, sink)
-        if path is None:
-            break
-        max_flow+=path_flow
-        update_residul_graph(res_graph, path, path_flow, source, sink)
-    return max_flow
-
-
-def find_augmenting_path(res_graph,source,sink):
-    visited= [False]* len(res_graph)
-    
-    curr_path=[-1]*len(res_graph)
-    
-    queue= deque([source])
-    
-    visited[source]=True
-    
-    while queue:
-        u = queue.popleft()
-        for v in res_graph[u]:
-            if not visited[v] and res_graph[u][v] > 0:
-                queue.append(v)
-                visited[v] = True
-                curr_path[v]=u
-                if v == sink:
-                    path_flow = float('inf')
-                    s = sink
-                    while s != source:
-                        path_flow = min(path_flow, res_graph[curr_path[s]][s])
-                        s= curr_path[s]
-                    return curr_path, path_flow
-    return None, 0
-def update_residul_graph(res_graph,path,path_flow,source,sink):
-    if path is None:
-        return 
-
-    v = sink 
-    while v != source:
-        u = path[v]
-        res_graph[u][v] -= path_flow
-        res_graph[v][u] += path_flow
-                        
+def plan_city_d(num_data_hubs, num_service_providers, connections, provider_capacities, preliminary_assignment):
+    def ford_fulkerson(graph, source_node, sink_node):
         
-def plan_city_d( 
-    num_data_hubs,
-    num_service_providers,
-    connections, 
-    provider_capacities, 
-    preliminaryAssignment
-):
-    n = num_data_hubs
-    k = num_service_providers
-    source, sink = n + k, n + k + 1  
+        def find_augmenting_path(graph, parent, visited):
+            stack = [(source_node, float('inf'))]
+            visited[source_node] = True
 
-    # Create residual graph
-    res_graph = [{} for _ in range(num_data_hubs + num_service_providers + 2)]
-    
-    for hub in range(n):
-        res_graph[source][hub]=1
-    
-    for hub,providers in connections.items():
-        for provider in providers:
-            res_graph[hub][provider]=1
-    
-    for provider in range(n,n+k):
-        res_graph[provider][sink] = provider_capacities[provider]
-    
-    for i in range(len(res_graph)):
-        for j in res_graph[i]:
-            if i not in res_graph[j]:
-                res_graph[j][i]=0
-    
-    for hub, provider in preliminaryAssignment.items():
-        res_graph[source][hub]-= 1 
-        res_graph[hub][provider]-= 1 
-        res_graph[provider][sink]-= 1 
-        
-        
-        res_graph[sink][provider] += 1 
-        res_graph[provider][hub] += 1 
-    
-    max_flow = ford_fulkerson(res_graph, source, sink)
-    if max_flow == 1:
-        return True
-    else:
-        return False
+            while stack:
+                u, flow = stack.pop()
+                for v in range(len(graph)):
+                    if not visited[v] and graph[u].get(v, 0) > 0:
+                        parent[v] = u
+                        min_flow = min(flow, graph[u][v])
+                        if v == sink_node:
+                            return min_flow
+                        stack.append((v, min_flow))
+                        visited[v] = True
+            return 0
+
+        node_count = len(graph)
+        max_flow = 0
+        parent = [-1] * node_count
+
+        while True:
+            visited = [False] * node_count
+            augmenting_flow = find_augmenting_path(graph, parent, visited)
+            
+            if augmenting_flow == 0:
+                break
+
+            max_flow += augmenting_flow
+            v = sink_node
+            while v != source_node:
+                u = parent[v]
+                graph[u][v] -= augmenting_flow
+                graph[v][u] += augmenting_flow
+                v = u
+        return max_flow
+
+    total_nodes = num_data_hubs + num_service_providers
+    source_node, sink_node = total_nodes, total_nodes + 1
+
+    # Create a residual graph to represent the flow problem.
+    residual_graph = [[] for _ in range(total_nodes + 2)]
+
+    # Add edges from the source to data hubs and from data hubs to service providers.
+    for hub_index in range(num_data_hubs):
+        residual_graph[source_node].append(hub_index)
+        for provider in connections[hub_index]:
+            residual_graph[hub_index].append(provider)
+
+    # Add edges from service providers to the sink based on their capacities.
+    for provider_index in range(num_data_hubs, num_data_hubs + num_service_providers):
+        capacity = provider_capacities[provider_index]
+        for _ in range(capacity):
+            residual_graph[provider_index].append(sink_node)
+
+    # Create a flow graph from the residual graph.
+    graph = [{} for _ in range(total_nodes + 2)]
+    for u in range(total_nodes + 2):
+        for v in residual_graph[u]:
+            graph[v][u] = 0
+            if v == sink_node:
+                graph[u][v] = provider_capacities[u]
+            else:
+                graph[u][v] = 1
+
+    # Update the graph based on the preliminary assignment.
+    for hub, provider in preliminary_assignment.items():
+        graph[source_node][hub] -= 1
+        graph[hub][provider] -= 1
+        graph[provider][hub] += 1
+        graph[provider][sink_node] -= 1
+        graph[sink_node][provider] += 1
+
+    # Find the maximum flow using the Ford-Fulkerson algorithm.
+    flow = ford_fulkerson(graph, source_node, sink_node)
+
+    return flow == 1
+
+

@@ -86,7 +86,7 @@ plan_city_a(num_data_hubs = 5,
             num_service_providers = 5,
             connections = {0: [5,7,8], 1: [5, 8], 2: [7,8,9], 3: [5, 6, 8, 9], 4: [5,6,7,8]},
             provider_capacities = [0]*5 + [0,1,0,2,2],
-            preliminaryAssignment = {0: 8, 1: 8, 2: 9, 3: 9})
+            preliminary_assignment = {0: 8, 1: 8, 2: 9, 3: 9})
 \end{lstlisting}
 
 Your task is to ensure each data hub is connected to a service provider while considering capacity constraints. If the last hub ($n-1$) can't be connected, find out which service provider's capacities need to be increased by one for a feasible solution.
