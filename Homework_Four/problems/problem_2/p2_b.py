@@ -17,8 +17,9 @@ def compute_total_waste(packages, boxes):
     total_waste = 0
     for package in packages:
         best_box = find_binary_search(boxes, package)
-        if best_box is None:  # If no box can fit the package
-            return float('inf')  # This supplier cannot be used
+        # If no box can fit the package
+        if best_box is None: 
+            return float('inf')  
         total_waste += best_box - package
     return total_waste
 
